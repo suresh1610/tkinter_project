@@ -52,7 +52,7 @@ def task():
     task_date.place(x=1130, y=55)
 
     task_add_btn = ttk.Button(root, text="add task")
-    task_add_btn.place(x=1400, y=55)
+    task_add_btn.place(x=1400, y=60)
 
 
 
