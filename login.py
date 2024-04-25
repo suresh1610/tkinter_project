@@ -4,7 +4,6 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
 from signup import signup
-from demo import task_todo
 import psycopg2
 from todo import task
 from ctypes import windll
