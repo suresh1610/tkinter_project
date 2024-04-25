@@ -8,7 +8,7 @@ from ctypes import windll
 
 windll.shcore.SetProcessDpiAwareness(1)
 
-def task(username):
+def task(username):  # main function
 
     root = tk.Tk()
     root.state("zoomed")
@@ -29,17 +29,20 @@ def task(username):
                 completion_status boolean,
                 u_name varchar(30) references userdetails(username)
                 )'''
-    task = 'purchase fruits from market'
-    date = datetime.datetime.now()
-    complete = False
-    u_name = username
-    query = "insert into todo(task, task_date, completion_status, u_name) values(%s, %s, %s, %s)"
-    data = (task, date, complete, u_name)
-
-    pointer.execute(query, data)
+    pointer.execute(create_query,)
     conn.commit()
-    conn.close()
 
+    def add_task(): # insert sub function
+        task = task_entry.get()
+        date = task_date.get()
+        complete = False
+        u_name = username
+
+        query = "insert into todo(task, task_date, completion_status, u_name) values(%s, %s, %s, %s)"
+        data = (task, date, complete, u_name)
+
+        pointer.execute(query, data)
+        conn.commit()
 
     task_label = ttk.Label(root, text="Enter your task :", font=('Consolas', 15))
     task_label.place(x=200, y=50)
@@ -50,13 +53,13 @@ def task(username):
     task_date_label = ttk.Label(root, text="Enter your date:", font=('Consolas', 15))
     task_date_label.place(x=900, y=50)
 
-    task_date = DateEntry(root, width=20, background='darkblue',foreground='white', borderwidth=2)
+    task_date = DateEntry(root,date_pattern='yyyy/mm/dd' ,width=20, background='darkblue',foreground='white', borderwidth=2)
     task_date.place(x=1130, y=55)
 
-    task_add_btn = ttk.Button(root, text="add task")
+    task_add_btn = ttk.Button(root, text="add task", command=add_task)
     task_add_btn.place(x=1400, y=60)
 
-
     root.mainloop()
+    conn.close()
 
 
