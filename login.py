@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
 from signup import signup
+from demo import task_todo
 import psycopg2
 from todo import task
 from ctypes import windll
@@ -34,8 +35,7 @@ def login():
 
         if user_detail:
             messagebox.showinfo('login successfully', "welcome "+ username + " !!!")
-            root.destroy()
-            task()
+            task(username)
         else:
             messagebox.showinfo('Login failed', "Invalid username and password")
             username_entry.delete(0, END)

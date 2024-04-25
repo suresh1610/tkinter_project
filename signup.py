@@ -38,7 +38,7 @@ def signup():
                 connection.commit()
                 messagebox.showinfo("Sign up","your data is successfully registered")
                 signup_window.destroy()
-                task()
+                task(username)
                 return
             except psycopg2.errors.UniqueViolation as error:
                 messagebox.showinfo("sign up", "The username already exist, Please choose a different username")

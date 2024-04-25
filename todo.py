@@ -8,7 +8,7 @@ from ctypes import windll
 
 windll.shcore.SetProcessDpiAwareness(1)
 
-def task():
+def task(username):
 
     root = tk.Tk()
     root.state("zoomed")
@@ -22,22 +22,24 @@ def task():
     )
 
     pointer = conn.cursor()
-# query = '''create table if not exists task(
-#                 username varchar(30),
-#                 task varchar(50),
-#                 task_date date,
-#                 completion_status boolean
-#                 )'''
-    # username = 'suersh123'
-    # task = 'purchase fruits from market'
-    # date = datetime.datetime.now()
-    # complete = False
-    # query = "insert into task(username, task, task_date, completion_status) values(%s, %s, %s, %s)"
-    # data = (username, task, date, complete)
+    create_query = '''create table if not exists todo(
+                id serial primary key,
+                task varchar(50),
+                task_date date,
+                completion_status boolean,
+                u_name varchar(30) references userdetails(username)
+                )'''
+    task = 'purchase fruits from market'
+    date = datetime.datetime.now()
+    complete = False
+    u_name = username
+    query = "insert into todo(task, task_date, completion_status, u_name) values(%s, %s, %s, %s)"
+    data = (task, date, complete, u_name)
 
-    # pointer.execute(query, data)
-    # conn.commit()
-    # conn.close()
+    pointer.execute(query, data)
+    conn.commit()
+    conn.close()
+
 
     task_label = ttk.Label(root, text="Enter your task :", font=('Consolas', 15))
     task_label.place(x=200, y=50)
@@ -55,7 +57,6 @@ def task():
     task_add_btn.place(x=1400, y=60)
 
 
-
     root.mainloop()
-task()
+
 
