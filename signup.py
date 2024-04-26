@@ -4,7 +4,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import re
-import psycopg2 
+import mysql.connector # for mysql
+import psycopg2  # for postgresql
 from ctypes import windll
 from todo import task
 
@@ -40,18 +41,17 @@ def signup():
                 signup_window.destroy()
                 task(username)  # Here i calling task function from todo.py and pass the username to that file
                 return
-            except psycopg2.errors.UniqueViolation as error:
+            except mysql.connector.errors.IntegrityError as error:
                 messagebox.showinfo("sign up", "The username already exist, Please choose a different username")
                 signup_window.destroy()
                 signup()
                 return
     
-    connection = psycopg2.connect(  # here i am connect to database
-        host = 'localhost',
-        dbname = 'postgres',
-        user = 'postgres',
-        password = '12345',
-        port = 5432
+    connection = mysql.connector.connect(  # here i am connect to database
+        host="localhost",
+        user="root",
+        passwd="",
+        database="pumo_project"
     )
 
     pointer = connection.cursor() # creating cursor
@@ -88,3 +88,4 @@ def signup():
     signup_button.grid(column=4, row=3, padx=10, pady=10)
 
     signup_window.mainloop()
+

@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
 from signup import signup
+import mysql.connector
 import psycopg2
 from todo import task
 from ctypes import windll
@@ -18,12 +19,11 @@ def login():
         password = password_entry.get()
 
 
-        connection = psycopg2.connect(
-            host = 'localhost',
-            dbname = 'postgres',
-            user = 'postgres',
-            password = '12345',
-            port = 5432
+        connection = mysql.connector.connect(  # here i am connect to database
+            host="localhost",
+            user="root",
+            passwd="",
+            database="pumo_project"
         )
 
         pointer = connection.cursor()
