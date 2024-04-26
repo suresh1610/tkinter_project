@@ -34,7 +34,7 @@ def login():
 
         if user_detail:
             messagebox.showinfo('login successfully', "welcome "+ username + " !!!")
-            task(username)
+            task(username) # Here i calling task function from todo.py and pass the username to that file
         else:
             messagebox.showinfo('Login failed', "Invalid username and password")
             username_entry.delete(0, END)

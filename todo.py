@@ -32,9 +32,9 @@ def task(username):  # main function
     pointer.execute(create_query,)
     conn.commit()
 
-    def add_task(): # insert sub function
+    def add_task(): # insert entered data into the db (sub function)
         task = task_entry.get()
-        date = task_date.get()
+        date = task_date_entry.get()
         complete = False
         u_name = username
 
@@ -47,19 +47,22 @@ def task(username):  # main function
     task_label = ttk.Label(root, text="Enter your task :", font=('Consolas', 15))
     task_label.place(x=200, y=50)
 
-    task_entry = ttk.Entry(root, width=50)
+    task_entry = ttk.Entry(root, width=42, font=('Consolas', 15))
     task_entry.place(x=450, y=55)
 
-    task_date_label = ttk.Label(root, text="Enter your date:", font=('Consolas', 15))
-    task_date_label.place(x=900, y=50)
+    task_date_label = ttk.Label(root, text="Enter your date (yyyy-mm-dd):", font=('Consolas', 15))
+    task_date_label.place(x=200, y=100)
 
-    task_date = DateEntry(root,date_pattern='yyyy/mm/dd' ,width=20, background='darkblue',foreground='white', borderwidth=2)
-    task_date.place(x=1130, y=55)
+    # task_date = DateEntry(root,date_pattern='yyyy/mm/dd' ,width=20, background='darkblue',foreground='white', borderwidth=2)
+    # task_date.place(x=450, y=105)
+    task_date_entry = ttk.Entry(root, width=30, font=('Consolas', 15))
+    task_date_entry.place(x=620, y=100)
 
-    task_add_btn = ttk.Button(root, text="add task", command=add_task)
-    task_add_btn.place(x=1400, y=60)
+    task_add_btn = ttk.Button(root, text="add task", command=add_task, width=20)
+    task_add_btn.place(x=1200, y=105)
 
     root.mainloop()
     conn.close()
 
+# task("suresh123")
 
