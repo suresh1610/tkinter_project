@@ -2,6 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import *
 import mysql.connector
+from tkinter import messagebox
+from tkinter.messagebox import askokcancel, WARNING
+from tkinter import simpledialog
 import psycopg2
 from datetime import datetime
 from tkcalendar import DateEntry
@@ -33,12 +36,12 @@ def task(username):  # main function
     conn.commit()
 
     def load_task():
-        clear_frames()
 
         today = datetime.now().date()
+        complete_status = 0
 
-        query = "select * from todo where u_name = %s order by task_date"
-        date = (username,)
+        query = "select * from todo where u_name = %s and completion_status=%s order by task_date"
+        date = (username,complete_status)
         pointer.execute(query, date)
         todos = pointer.fetchall()
 
@@ -53,21 +56,26 @@ def task(username):  # main function
                 frame = tomorrow_frame
             else:
                 frame = previous_frame
+            
+            task_frame = Frame(frame)
+            task_frame.pack(fill='x', pady=5, padx=5)
 
-            task_checkbox = ttk.Checkbutton(frame, text=task_name)
-            task_checkbox.pack()
+            completion_var = tk.IntVar(value=0)
 
+            task_checkbox = ttk.Checkbutton(task_frame, text=task_name, variable=completion_var, onvalue=1, offvalue=0)
+            task_checkbox.pack(side="left")
 
-    
+            edit_btn = ttk.Button(task_frame, text="edit", command=lambda task_id=task_id: edit_task(task_id))
+            edit_btn.pack(side="left", padx=5)
 
-    def clear_frames():
-        for frame in [today_frame, tomorrow_frame]:
-            for widget in frame.winfo_children():
-                widget.destroy()
-    
+            delete_btn = ttk.Button(task_frame, text="delete", command=lambda task_id=task_id: delete_task(task_id))
+            delete_btn.pack(side="left", padx=5)
 
+            complete_btn = ttk.Button(task_frame, text="todo completed", command=lambda task_id=task_id: update_task(task_id))
+            complete_btn.pack(side="left")
 
     def add_task(): # insert entered data into the db (sub function)
+
         enter_task = task_entry.get()
         date = task_date_entry.get()
         complete = False
@@ -78,46 +86,104 @@ def task(username):  # main function
         pointer.execute(query, data)
         conn.commit()
     
+    def update_task(task_id):
 
-    user_name = Label(root, text=username, font=('Goudy Stout', 15))
-    user_name.pack()
+        complete_status = True
+
+        query = "update todo set completion_status=%s where task_id=%s"
+        data = (complete_status,task_id)
+        pointer.execute(query, data)
+        conn.commit()
+        print("data is updated")
+    
+    def edit_task_name(task_id, new_task_name):
+        edit_query = "update todo set task_name=%s where task_id=%s"
+        edit_data = (new_task_name, task_id)
+        pointer.execute(edit_query, edit_data)
+        conn.commit()
+
+    
+    def edit_task(task_id):
+        new_task_name = tk.simpledialog.askstring("Edit task", "Enter your new task name:")
+        if new_task_name:
+            edit_task_name(task_id, new_task_name)
+        
+    
+    def delete_task(task_id):
+        ans = askokcancel(title="delete task", message="are you sure?", icon=WARNING)
+        if ans:
+            delete_query = "delete from todo where task_id=%s"
+            data = (task_id,)
+            pointer.execute(delete_query, data)
+            conn.commit()
+            messagebox.showinfo("delete message", "Todo deleted successfully")
+        else:
+            messagebox.showinfo("delete message", "Todo deletion failed")
+
+        
+    
+    def display_completed():  # dispaly completed task
+        # clear_frames()
+        complete_status = 1
+
+        query = "select * from todo where completion_status=%s"
+        data = (complete_status,)
+        pointer.execute(query, data)
+        todos = pointer.fetchall()
+
+        for todo_ele in todos:
+            task_id, task_name, task_date, completion_status, u_name = todo_ele
+
+            completed_label = Label(complted_frame, text=task_name)
+            completed_label.pack(side="left")
+
+
+
+    user_name = Label(root, text=f"welcome {username}", font=('Goudy Stout', 15))
+    user_name.pack(padx=5, pady=5)
     
     task_label = Label(root, text="Enter your task :", font=('Consolas', 12))
     task_label.place(x=100, y = 50)
+    # task_label.pack(padx=5, pady=0)
 
     task_entry = Entry(root, width=42, font=('Consolas', 12))
     task_entry.place(x=300, y =50)
+    #task_entry.pack(padx=5, pady=5)
 
     task_date_label = Label(root, text="Enter your date (yyyy-mm-dd):", font=('Consolas', 12))
     task_date_label.place(x=800, y=50)
+    #task_date_label.pack(padx=5, pady=5)
 
     # task_date = DateEntry(root,date_pattern='yyyy/mm/dd' ,width=20, background='darkblue',foreground='white', borderwidth=2)
     # task_date.place(x=450, y=105)
     task_date_entry = Entry(root, width=20, font=('Consolas', 12))
     task_date_entry.place(x=1130, y=50)
+    #task_date_entry.pack(padx=5, pady=5)
 
     task_add_btn = Button(root, text="add task", command=add_task, width=20)
     task_add_btn.place(x=1400, y=45)
+    #task_add_btn.pack(padx=5, pady=5)
 
     today_frame = LabelFrame(root, text="today's task")
     today_frame.place(x=20, y = 100)
+    #today_frame.pack(padx=5, pady=5)
 
-    # frame_label = Checkbutton(today_frame, text="readugiytdjtrsyersyres books")
-    # frame_label.pack(side="left")
+    tomorrow_frame = LabelFrame(root, text="upcoming task")
+    #tomorrow_frame.pack(padx=5, pady=5)
+    tomorrow_frame.place(x=500, y = 100)
 
-    # frame_label2 = Checkbutton(today_frame, text="read books 2")
-    # frame_label2.pack(side="left")
+    previous_frame = LabelFrame(root, text="incomplete previous task")
+    previous_frame.place(x=1000, y = 100)
+    #previous_frame.pack(padx=5, pady=5)
 
-    tomorrow_frame = LabelFrame(root, text="tomorrow's task")
-    tomorrow_frame.place(x=500, y = 200)
-
-    previous_frame = LabelFrame(root, text="tomorrow's task")
-    previous_frame.place(x=1000, y = 200)
-
+    #complted_frame = LabelFrame(root,text="completed task")
+    # complted_frame.place(x=500, y=800)
+    #complted_frame.pack(side="right",pady=5, padx=5)
+    
+    # display_completed()
     load_task()
 
     root.mainloop()
     conn.close()
-
 # task("suresh123")
 

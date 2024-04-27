@@ -13,7 +13,7 @@ from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1)
 
 
-def login():
+def todo_login():
     def check_user():
         username = username_entry.get()
         password = password_entry.get()
@@ -34,12 +34,14 @@ def login():
 
         if user_detail:
             messagebox.showinfo('login successfully', "welcome "+ username + " !!!")
-            task(username) # Here i calling task function from todo.py and pass the username to that file
+            task(username)
+            root.destroy()
+         # Here i calling task function from todo.py and pass the username to that file
         else:
             messagebox.showinfo('Login failed', "Invalid username and password")
             username_entry.delete(0, END)
             password_entry.delete(0, END)
-            login()
+            todo_login()
     
     root = tk.Tk()
     root.geometry('500x200')

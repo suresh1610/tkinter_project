@@ -2,15 +2,14 @@
 
 import tkinter as tk
 from tkinter import ttk
-from login import login
+from login import todo_login
 from signup import signup
 from ctypes import windll
 
 windll.shcore.SetProcessDpiAwareness(1)
 
-
 def open_login_window():
-    login()
+    todo_login()
 
 def open_signup_window():
     signup()
@@ -22,7 +21,6 @@ root.resizable(False, False)
 
 login_label = ttk.Label(root, text="if you already have account --->")
 login_label.place(relx=0.4, rely=0.3, anchor="center")
-
 
 login_button = ttk.Button(root, text="Login", command=open_login_window)
 login_button.place(relx=0.75, rely=0.3, anchor="center")
