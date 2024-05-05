@@ -42,6 +42,8 @@ def todo_login():
             username_entry.delete(0, END)
             password_entry.delete(0, END)
             todo_login()
+
+
     
     root = tk.Tk()
     root.geometry('500x200')
